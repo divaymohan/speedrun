@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: speedrun:${SPEEDRUN_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPEEDRUN_HOST: 0.0.0.0
+      SPEEDRUN_DB_HOST: speedrun-db
+      SPEEDRUN_DB_PORT: 5432
+      SPEEDRUN_DB_USER: speedrun
+      SPEEDRUN_DB_PASS: speedrun
+      SPEEDRUN_DB_BASE: speedrun
+      SPEEDRUN_REDIS_HOST: speedrun-redis
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: speedrun-db
+    environment:
+      POSTGRES_PASSWORD: "speedrun"
+      POSTGRES_USER: "speedrun"
+      POSTGRES_DB: "speedrun"
+    volumes:
+    - speedrun-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U speedrun
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  redis:
+    image: bitnami/redis:6.2.5
+    hostname: "speedrun-redis"
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
+
+
+
+volumes:
+  speedrun-db-data:
+    name: speedrun-db-data
