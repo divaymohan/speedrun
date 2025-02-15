@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from speedrun.db.meta import meta
 from speedrun.db.models import load_all_models
-from speedrun.services.redis.lifetime import init_redis, shutdown_redis
 from speedrun.settings import settings
 
 
@@ -55,7 +54,7 @@ def register_startup_event(
         app.middleware_stack = None
         _setup_db(app)
         await _create_tables()
-        init_redis(app)
+        # init_redis(app)
         app.middleware_stack = app.build_middleware_stack()
         pass  # noqa: WPS420
 
@@ -76,7 +75,7 @@ def register_shutdown_event(
     async def _shutdown() -> None:  # noqa: WPS430
         await app.state.db_engine.dispose()
 
-        await shutdown_redis(app)
+        # await shutdown_redis(app)
         pass  # noqa: WPS420
 
     return _shutdown

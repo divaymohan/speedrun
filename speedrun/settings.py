@@ -1,7 +1,6 @@
 import enum
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
@@ -40,7 +39,7 @@ class Settings(BaseSettings):
 
     log_level: LogLevel = LogLevel.INFO
     # Variables for the database
-    db_host: str = "localhost"
+    db_host: str = "speedrun-db"
     db_port: int = 5432
     db_user: str = "speedrun"
     db_pass: str = "speedrun"
@@ -48,11 +47,16 @@ class Settings(BaseSettings):
     db_echo: bool = False
 
     # Variables for Redis
-    redis_host: str = "speedrun-redis"
-    redis_port: int = 6379
-    redis_user: Optional[str] = None
-    redis_pass: Optional[str] = None
-    redis_base: Optional[int] = None
+    # redis_host: str = "speedrun-redis"
+    # redis_port: int = 6379
+    # redis_user: Optional[str] = None
+    # redis_pass: Optional[str] = None
+    # redis_base: Optional[int] = None
+
+    rbmq_host: str = "speedrun-rabbitmq"
+    rbmq_port: str = "5672"
+    rbmq_user_name: str = "speedrun"
+    rbmq_password: str = "speedrun"
 
     @property
     def db_url(self) -> URL:
@@ -68,25 +72,6 @@ class Settings(BaseSettings):
             user=self.db_user,
             password=self.db_pass,
             path=f"/{self.db_base}",
-        )
-
-    @property
-    def redis_url(self) -> URL:
-        """
-        Assemble REDIS URL from settings.
-
-        :return: redis URL.
-        """
-        path = ""
-        if self.redis_base is not None:
-            path = f"/{self.redis_base}"
-        return URL.build(
-            scheme="redis",
-            host=self.redis_host,
-            port=self.redis_port,
-            user=self.redis_user,
-            password=self.redis_pass,
-            path=path,
         )
 
     model_config = SettingsConfigDict(

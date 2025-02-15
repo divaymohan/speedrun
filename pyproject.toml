@@ -22,6 +22,8 @@ SQLAlchemy = {version = "^2.0.18", extras = ["asyncio"]}
 asyncpg = {version = "^0.28.0", extras = ["sa"]}
 redis = {version = "^4.6.0", extras = ["hiredis"]}
 httptools = "^0.6.0"
+requests = "^2.32.3"
+celery = "^5.2"
 
 
 [tool.poetry.dev-dependencies]
@@ -38,6 +40,7 @@ anyio = "^3.6.2"
 pytest-env = "^0.8.1"
 fakeredis = "^2.5.0"
 httpx = "^0.23.3"
+celery = "^5.2"
 
 [tool.isort]
 profile = "black"
