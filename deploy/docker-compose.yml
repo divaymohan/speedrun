@@ -8,12 +8,10 @@ services:
       target: prod
     image: speedrun:${SPEEDRUN_VERSION:-latest}
     restart: always
-#    env_file:
-#    - .env
     depends_on:
       db:
         condition: service_healthy
-      rabbitmq:
+      redis:
         condition: service_healthy
     environment:
       SPEEDRUN_HOST: 0.0.0.0
@@ -22,10 +20,8 @@ services:
       SPEEDRUN_DB_USER: speedrun
       SPEEDRUN_DB_PASS: speedrun
       SPEEDRUN_DB_BASE: speedrun
-      SPEEDRUN_RABBITMQ_HOST: speedrun-rabbitmq
     ports:
     - "8000:8000"
-
 
   db:
     image: postgres:13.8-bullseye
@@ -43,22 +39,6 @@ services:
       timeout: 3s
       retries: 40
 
-  rabbitmq:
-    image: rabbitmq:3.9-management
-    hostname: "speedrun-rabbitmq"
-    restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: "speedrun"
-      RABBITMQ_DEFAULT_PASS: "speedrun"
-    healthcheck:
-      test: rabbitmq-diagnostics check_running
-      interval: 2s
-      timeout: 3s
-      retries: 40
-    ports:
-    - "5672:5672"    # AMQP
-    - "15672:15672"    # Management UI
-
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -72,17 +52,72 @@ services:
       db:
         condition: service_healthy
 
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
   worker:
     build:
       context: ..
       dockerfile: ./Dockerfile
       target: prod
     container_name: worker
-    command: ["celery", "-A", "speedrun.tasks", "worker", "--loglevel=info"]
+    volumes:
+    - speedrun-worker-data:/var/lib/worker/data
+    command: ["celery", "-A", "speedrun.tasks", "worker", "-B", "--loglevel=info"]
     depends_on:
-    - rabbitmq
+    - redis
     - api
+
+  flower:
+    container_name: flower
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+      target: prod
+    command: celery -A speedrun.tasks flower --port=5555
+    ports:
+    - "5556:5555"
+    depends_on:
+    - api
+    - redis
+    - worker
+
+  celerybeat:
+    container_name: celerybeat
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+      target: prod
+    environment:
+      REDBEAT_REDIS_URL: "redis://redis:6379/0"
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    command: ["celery", "-A", "speedrun.tasks", "beat", "--scheduler", "redbeat.RedBeatScheduler", "--loglevel=info"]
+    depends_on:
+    - redis
+    - worker
+    restart: always
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
+    depends_on:
+    - redis
 
 volumes:
   speedrun-db-data:
     name: speedrun-db-data
+  speedrun-worker-data:
+    name: speedrun-worker-data

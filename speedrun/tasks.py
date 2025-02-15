@@ -2,13 +2,14 @@ import json
 
 import requests
 
+from celery import shared_task
 from celery.utils.log import get_task_logger
 from speedrun.celery import celery_app
 
 logger = get_task_logger(__name__)
 
 
-@celery_app.task
+@shared_task
 def execute_scheduled_trigger(trigger_id: int, trigger_time: str):
     """
     Executes a scheduled trigger.

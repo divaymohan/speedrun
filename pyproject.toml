@@ -24,6 +24,9 @@ redis = {version = "^4.6.0", extras = ["hiredis"]}
 httptools = "^0.6.0"
 requests = "^2.32.3"
 celery = "^5.2"
+flower = "^2.0.1"
+celery-redbeat = "^2.2.0"
+pytz = "^2025.1"
 
 
 [tool.poetry.dev-dependencies]
