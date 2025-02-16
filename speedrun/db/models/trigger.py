@@ -21,9 +21,4 @@ class Trigger(Base):
 
     created_at = Column(DateTime, server_default=func.now())
 
-    # Relationship with Event Logs
-    event_logs = relationship(
-        "EventLog",
-        back_populates="trigger",
-        cascade="all, delete",
-    )
+

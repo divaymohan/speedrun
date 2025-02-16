@@ -1,7 +1,11 @@
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import make_url
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from starlette.requests import Request
+
+from speedrun.settings import settings
 
 
 async def get_db_session(request: Request) -> AsyncGenerator[AsyncSession, None]:

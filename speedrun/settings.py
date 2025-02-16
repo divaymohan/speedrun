@@ -46,13 +46,6 @@ class Settings(BaseSettings):
     db_base: str = "speedrun"
     db_echo: bool = False
 
-    # Variables for Redis
-    # redis_host: str = "speedrun-redis"
-    # redis_port: int = 6379
-    # redis_user: Optional[str] = None
-    # redis_pass: Optional[str] = None
-    # redis_base: Optional[int] = None
-
     rbmq_host: str = "speedrun-rabbitmq"
     rbmq_port: str = "5672"
     rbmq_user_name: str = "speedrun"
