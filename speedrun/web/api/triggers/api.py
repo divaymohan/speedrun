@@ -1,13 +1,15 @@
-from typing import List
+from typing import List, Annotated
 
 from fastapi import APIRouter, Depends
 
+from speedrun.auth.permission_checker import PermissionChecker
 from speedrun.dependencies.dependencies import (
     get_event_log_service,
     get_trigger_service,
 )
 from speedrun.dtos.event_logs import EventLogResponse
 from speedrun.dtos.trigger import TriggerCreate, TriggerResponse, TriggerUpdate
+from speedrun.dtos.user import UserDetails
 from speedrun.services.event_logs import EventLogService
 from speedrun.services.trigger import TriggerService
 
@@ -21,6 +23,8 @@ router = APIRouter()
     tags=["Trigger"],
 )
 async def create_trigger(
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     trigger_data: TriggerCreate,
     service: TriggerService = Depends(get_trigger_service),
 ):
@@ -34,6 +38,8 @@ async def create_trigger(
     tags=["Trigger"],
 )
 async def get_all_triggers(
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     service: TriggerService = Depends(get_trigger_service),
 ):
     """
@@ -49,6 +55,8 @@ async def get_all_triggers(
 )
 async def get_trigger_by_id(
     trigger_id: int,
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     service: TriggerService = Depends(get_trigger_service),
 ):
     response: TriggerResponse = await service.get_trigger(trigger_id=trigger_id)
@@ -62,6 +70,8 @@ async def get_trigger_by_id(
 )
 async def start_trigger(
     trigger_id: int,
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     service: TriggerService = Depends(get_trigger_service),
 ):
     """
@@ -78,6 +88,8 @@ async def start_trigger(
 async def update_trigger(
     trigger_id: int,
     trigger_update: TriggerUpdate,
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     service: TriggerService = Depends(get_trigger_service),
 ):
     """
@@ -96,6 +108,8 @@ async def update_trigger(
 )
 async def delete_trigger(
     trigger_id: int,
+    current_user: Annotated[
+        UserDetails, Depends(PermissionChecker())],
     service: TriggerService = Depends(get_trigger_service),
 ):
     """
@@ -111,6 +125,8 @@ async def delete_trigger(
     tags=["EventLogs"],
 )
 async def get_all_event_logs(
+    current_user: Annotated[
+            UserDetails, Depends(PermissionChecker())],
     service: EventLogService = Depends(get_event_log_service),
 ):
     """
@@ -126,6 +142,8 @@ async def get_all_event_logs(
 )
 async def get_logs_by_trigger_id(
     trigger_id: int,
+    current_user: Annotated[
+            UserDetails, Depends(PermissionChecker())],
     service: EventLogService = Depends(get_event_log_service),
 ):
     response: List[EventLogResponse] = await service.get_events_by_trigger_id(

@@ -4,6 +4,7 @@ import requests
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from speedrun.celery import celery_app
 from speedrun.db.internal_db import get_internal_db_session
 from speedrun.db.models.event_logs import EventLog as EventLogEntity
 
