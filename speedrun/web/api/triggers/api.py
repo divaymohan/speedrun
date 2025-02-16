@@ -17,6 +17,7 @@ router = APIRouter()
     path="/triggers",
     response_model=TriggerCreate,
     description="Api will help to create an event",
+    tags=["Trigger"],
 )
 async def create_trigger(
     trigger_data: TriggerCreate,
@@ -29,6 +30,7 @@ async def create_trigger(
 @router.get(
     path="/triggers",
     response_model=List[TriggerResponse],
+    tags=["Trigger"],
 )
 async def get_all_triggers(
     service: TriggerService = Depends(get_trigger_service),
@@ -42,6 +44,7 @@ async def get_all_triggers(
 @router.get(
     path="/triggers/{trigger_id}",
     response_model=TriggerResponse,
+    tags=["Trigger"],
 )
 async def get_trigger_by_id(
     trigger_id: int,
@@ -51,7 +54,11 @@ async def get_trigger_by_id(
     return response
 
 
-@router.get("/triggers/{trigger_id}/start", response_model=str)
+@router.get(
+    path="/triggers/{trigger_id}/start",
+    response_model=str,
+    tags=["Trigger"],
+)
 async def get_trigger_by_id(
     trigger_id: int,
     service: TriggerService = Depends(get_trigger_service),
@@ -65,6 +72,7 @@ async def get_trigger_by_id(
 @router.put(
     path="/triggers/{trigger_id}",
     response_model=TriggerResponse,
+    tags=["Trigger"],
 )
 async def update_trigger(
     trigger_id: int,
@@ -83,6 +91,7 @@ async def update_trigger(
 @router.delete(
     path="/triggers/{trigger_id}",
     status_code=204,
+    tags=["Trigger"],
 )
 async def delete_trigger(
     trigger_id: int,

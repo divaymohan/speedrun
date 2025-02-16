@@ -20,6 +20,7 @@ class TriggerCreate(BaseModel):
 
     # API trigger options
     api_payload: Optional[Dict[str, str]] = None  # JSON payload for API trigger
+    api_url: Optional[str] = None
 
     # class Config:
     #     orm_mode = True
@@ -32,10 +33,8 @@ class TriggerResponse(BaseModel):
     schedule_time: Optional[datetime] = None
     schedule_interval: Optional[int] = None
     api_payload: Optional[dict] = None
+    api_url: Optional[str] = None
     created_at: datetime
-
-    # class Config:
-    #     orm_mode = True
 
 
 class TriggerUpdate(BaseModel):
@@ -43,6 +42,4 @@ class TriggerUpdate(BaseModel):
     schedule_time: Optional[datetime] = None
     schedule_interval: Optional[int] = None
     api_payload: Optional[dict] = None
-
-    # class Config:
-    #     orm_mode = True
+    api_url: Optional[str] = None

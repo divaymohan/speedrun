@@ -7,7 +7,7 @@ from redbeat import RedBeatSchedulerEntry
 from speedrun.celery import celery_app
 from speedrun.db.models.trigger import Trigger as TriggerEntity
 from speedrun.repo.trigger import TriggerRepo
-from speedrun.tasks import execute_scheduled_trigger
+from speedrun.tasks import execute_api_trigger, execute_scheduled_trigger
 from speedrun.web.api.triggers.schema import (
     TriggerCreate,
     TriggerResponse,
@@ -52,6 +52,7 @@ class TriggerService:
             if trigger_data.schedule_interval
             else None,
             api_payload=trigger_data.api_payload,
+            api_url=trigger_data.api_url,
         )
 
         await self.repo.create_trigger(trigger=trigger)
@@ -61,9 +62,10 @@ class TriggerService:
             name=trigger.name,
             trigger_type=trigger.trigger_type,
             schedule_time=trigger.schedule_time,
-            schedule_interval=trigger.schedule_interval.total_seconds(),
+            schedule_interval=trigger_data.schedule_interval,
             api_payload=trigger.api_payload,
             created_at=trigger.created_at,
+            api_url=trigger_data.api_url,
         )
 
     async def get_triggers(self) -> List[TriggerResponse]:
@@ -82,6 +84,7 @@ class TriggerService:
                     else 0,
                     api_payload=trigger.api_payload,
                     created_at=trigger.created_at,
+                    api_url=trigger.api_url,
                 ),
             )
         return trigger_response_list
@@ -97,6 +100,7 @@ class TriggerService:
             schedule_interval=trigger.schedule_interval.total_seconds(),
             api_payload=trigger.api_payload,
             created_at=trigger.created_at,
+            api_url=trigger.api_url,
         )
 
         return trigger_response
@@ -121,6 +125,13 @@ class TriggerService:
                     app=celery_app,
                 )
                 entry.save()
+        else:
+            schedule_time = datetime.fromisoformat(str(trigger.schedule_time))
+            execute_api_trigger.apply_async(
+                args=[trigger.id, trigger.api_url, trigger.api_payload],
+                eta=schedule_time,
+            )
+
         return "Event Triggered..!!"
 
     async def update_trigger(self, trigger_id: int, trigger_update: TriggerUpdate):
@@ -137,6 +148,7 @@ class TriggerService:
             schedule_interval=trigger.schedule_interval.total_seconds(),
             api_payload=trigger.api_payload,
             created_at=trigger.created_at,
+            api_url=trigger.api_url,
         )
 
         return trigger_response

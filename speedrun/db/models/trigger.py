@@ -17,6 +17,7 @@ class Trigger(Base):
 
     # For API triggers
     api_payload = Column(JSON, nullable=True)  # Store API payload
+    api_url = Column(String, nullable=True)
 
     created_at = Column(DateTime, server_default=func.now())
 

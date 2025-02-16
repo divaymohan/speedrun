@@ -4,7 +4,6 @@ import requests
 
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from speedrun.celery import celery_app
 
 logger = get_task_logger(__name__)
 
@@ -18,7 +17,7 @@ def execute_scheduled_trigger(trigger_id: int, trigger_time: str):
     # Log execution in the database (to be implemented)
 
 
-@celery_app.task
+@shared_task
 def execute_api_trigger(trigger_id: int, api_url: str, payload: dict):
     """
     Executes an API trigger by making a request.
