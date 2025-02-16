@@ -140,7 +140,7 @@ Note: Please use same api given in the payload
 Thanks for giving this assignment. Leaner lot of new things.
 
 Credits:
-1. ChatGPT (Help me in solving bugs)
+1. ChatGPT (Helped in solving bugs)
 2. https://youtu.be/nj-kFI_UDC0?si=vxOC7p9-mOq164XX
 3. https://youtu.be/mcX_4EvYka4?si=VhCh9FUEXBLoEVXo
 4. https://youtu.be/iwxzilyxTbQ?si=lSDy3nKD_KWu9kbd
