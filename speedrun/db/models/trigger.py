@@ -1,5 +1,4 @@
 from sqlalchemy import JSON, Column, DateTime, Integer, Interval, String, func
-from sqlalchemy.orm import relationship
 
 from speedrun.db.base import Base
 
@@ -20,5 +19,3 @@ class Trigger(Base):
     api_url = Column(String, nullable=True)
 
     created_at = Column(DateTime, server_default=func.now())
-
-

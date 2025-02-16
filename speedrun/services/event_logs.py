@@ -14,7 +14,7 @@ class EventLogService:
             trigger_id=event_data.trigger_id,
             event_type=event_data.event_type,
             payload=event_data.payload,
-            response=event_data.response
+            response=event_data.response,
         )
 
         event: EventLogEntity = await self.repo.create_event(event=event_log_entity)
@@ -33,14 +33,16 @@ class EventLogService:
                     event_type=event_log.event_type,
                     payload=event_log.payload,
                     archived=event_log.archived,
-                    response=event_log.response
+                    response=event_log.response,
                 ),
             )
         return event_log_response_list
 
     async def get_events_by_trigger_id(self, trigger_id: int) -> List[EventLogResponse]:
-        event_log_list: Sequence[EventLogEntity] = await self.repo.get_events_by_trigger_id(
-            trigger_id=trigger_id
+        event_log_list: Sequence[
+            EventLogEntity
+        ] = await self.repo.get_events_by_trigger_id(
+            trigger_id=trigger_id,
         )
         event_log_response_list = []
         for event in event_log_list:
@@ -53,9 +55,7 @@ class EventLogService:
                     event_type=event_log.event_type,
                     payload=event_log.payload,
                     archived=event_log.archived,
-                    response=event_log.response
+                    response=event_log.response,
                 ),
             )
         return event_log_response_list
-
-

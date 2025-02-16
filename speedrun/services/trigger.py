@@ -6,8 +6,12 @@ from redbeat import RedBeatSchedulerEntry
 
 from speedrun.celery import celery_app
 from speedrun.db.models.trigger import Trigger as TriggerEntity
-from speedrun.dtos.trigger import (TriggerCreate, TriggerType, TriggerResponse,
-                                   TriggerUpdate)
+from speedrun.dtos.trigger import (
+    TriggerCreate,
+    TriggerResponse,
+    TriggerType,
+    TriggerUpdate,
+)
 from speedrun.repo.trigger import TriggerRepo
 from speedrun.tasks import execute_api_trigger, execute_scheduled_trigger
 
@@ -22,7 +26,7 @@ class TriggerService:
                 raise HTTPException(
                     status_code=400,
                     detail="Scheduled trigger must have either a "
-                           "schedule_time or schedule_interval",
+                    "schedule_time or schedule_interval",
                 )
 
         # Validate API triggers

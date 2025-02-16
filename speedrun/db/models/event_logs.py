@@ -1,14 +1,4 @@
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    func, TEXT,
-)
-from sqlalchemy.orm import relationship
+from sqlalchemy import JSON, TEXT, Boolean, Column, DateTime, Integer, String, func
 
 from speedrun.db.base import Base
 

@@ -1,10 +1,9 @@
 import json
 
 import requests
+
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from speedrun.celery import celery_app
-
 from speedrun.db.internal_db import get_internal_db_session
 from speedrun.db.models.event_logs import EventLog as EventLogEntity
 
@@ -15,15 +14,15 @@ logger = get_task_logger(__name__)
 def execute_scheduled_trigger(
     trigger_id: int,
     trigger_time: str,
-    payload: dict = None
+    payload: dict = None,
 ):
     """
     Executes a scheduled trigger.
     """
     message: str = f"Executing Scheduled Trigger {trigger_id} at {trigger_time}"
-    from speedrun.repo.event_logs import EventLogsRepo
-
     import asyncio
+
+    from speedrun.repo.event_logs import EventLogsRepo
 
     async def log_event():
         async with get_internal_db_session() as session:
@@ -33,7 +32,7 @@ def execute_scheduled_trigger(
                 trigger_id=trigger_id,
                 event_type="scheduled",
                 payload=payload,
-                response=message
+                response=message,
             )
 
             await event_log_repo.create_event(event=event_log_entity)
@@ -62,8 +61,9 @@ def execute_api_trigger(trigger_id: int, api_url: str, payload: dict = None):
 
 
 def _store_event(trigger_id: int, status_code: int, text: str, payload: dict = None):
-    from speedrun.repo.event_logs import EventLogsRepo
     import asyncio
+
+    from speedrun.repo.event_logs import EventLogsRepo
 
     async def log_event():
         async with get_internal_db_session() as session:
@@ -73,7 +73,7 @@ def _store_event(trigger_id: int, status_code: int, text: str, payload: dict = N
                 trigger_id=trigger_id,
                 event_type="scheduled",
                 payload=payload,
-                response=f"Response: {status_code}, {text}"
+                response=f"Response: {status_code}, {text}",
             )
 
             await event_log_repo.create_event(event=event_log_entity)

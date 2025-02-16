@@ -2,13 +2,14 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from speedrun.dependencies.dependencies import (get_trigger_service,
-                                                get_event_log_service)
+from speedrun.dependencies.dependencies import (
+    get_event_log_service,
+    get_trigger_service,
+)
 from speedrun.dtos.event_logs import EventLogResponse
 from speedrun.dtos.trigger import TriggerCreate, TriggerResponse, TriggerUpdate
 from speedrun.services.event_logs import EventLogService
 from speedrun.services.trigger import TriggerService
-
 
 router = APIRouter()
 
@@ -128,7 +129,6 @@ async def get_logs_by_trigger_id(
     service: EventLogService = Depends(get_event_log_service),
 ):
     response: List[EventLogResponse] = await service.get_events_by_trigger_id(
-        trigger_id=trigger_id
+        trigger_id=trigger_id,
     )
     return response
-

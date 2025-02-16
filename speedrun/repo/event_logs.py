@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -22,9 +21,8 @@ class EventLogsRepo:
         return result.scalars().all()
 
     async def get_events_by_trigger_id(self, trigger_id: int) -> Sequence[EventLog]:
-        result = await self.db.execute(select(EventLog).where(EventLog.trigger_id == trigger_id))
+        result = await self.db.execute(
+            select(EventLog).where(EventLog.trigger_id == trigger_id)
+        )
         event_logs = result.scalars().all()
         return event_logs
-
-
-
