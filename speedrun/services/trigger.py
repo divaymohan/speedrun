@@ -91,6 +91,7 @@ class TriggerService:
 
     async def get_trigger(self, trigger_id: int) -> TriggerResponse:
         trigger: TriggerEntity = await self.repo.get_trigger(trigger_id=trigger_id)
+        # TODO: if not trigger raise not found exception with code 404
 
         trigger_response: TriggerResponse = TriggerResponse(
             id=trigger.id,

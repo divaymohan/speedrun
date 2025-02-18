@@ -53,7 +53,7 @@ Tech Stack used in this project:
 2. Postgres database to store triggers and logs
 3. Celery Worker to run triggered tasks
 4. Celery Beat + RedBeatScheduler to schedule the tasks
-5. Redis as broker 
+5. Redis as broker
 6. Flower to track the number of messages processed or failed
 7. Redis Commander: To track the scheduled tasks.
 8. Swagger as API docs
@@ -79,7 +79,7 @@ Note:
   "name": "Sample Scheduled",
   "trigger_type": "scheduled",
   "schedule_time": "2025-02-16T10:12:23.719Z",
-  "schedule_interval": 5 
+  "schedule_interval": 5
 }
 ```
 Note: schedule_interval will be in seconds.
